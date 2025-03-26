@@ -14,19 +14,23 @@
     <h1 class="title">📦 Inventory Insights</h1>
     <p class="subtitle">Customer View – AI-Generated Inventory Report</p>
 
-   <!-- 🧾 Project Description -->
-<div class="card p-4 my-4 shadow-lg" style="background: rgba(255, 255, 255, 0.1); color: #ffffff;">
-  <h4 style="color: #ffcc00;">🧠 About This Dashboard</h4>
-  <p class="mt-3" style="font-size: 1.1rem;">
-    This <strong>Gen AI-Based Inventory Management System</strong> processes uploaded inventory files and intelligently analyzes sales and expiry trends.
-    It calculates reorder requirements, sold percentages, and applies dynamic discount strategies based on stock aging.
-    <br><br>
-    We use the <strong>Gemini API (by Google)</strong> to generate context-aware insights from the inventory data — including predictions for restocking windows, demand estimation, and personalized suggestions for optimizing stock flow and sales margin.
-    <br><br>
-    Customers can explore all AI-generated insights via real-time tables and interactive bar graphs.
-  </p>
-</div>
-
+    <!-- 🧾 Project Description -->
+    <div class="card project-description shadow-lg">
+      <h4>🧠 About This Dashboard</h4>
+      <p>
+        This <strong>Gen AI-Based Inventory Management System</strong> processes uploaded inventory files and intelligently analyzes sales and expiry trends.
+        It calculates reorder requirements, sold percentages, and applies dynamic discount strategies based on stock aging.
+        <br><br>
+        We integrate the <strong>Gemini API (by Google)</strong> to interpret inventory contextually and offer insights like:
+        <ul class="text-start" style="max-width: 800px; margin: 0 auto;">
+          <li>🔮 Forecasting product demand over time</li>
+          <li>📉 Recommending discount levels based on expiry proximity</li>
+          <li>📦 Suggesting reorder amounts based on sales speed</li>
+        </ul>
+        <br>
+        Customers can explore all AI-generated insights through real-time tables and interactive bar graphs.
+      </p>
+    </div>
 
     <!-- Table -->
     <div class="card mt-4 p-3 shadow-lg" style="background: rgba(255, 255, 255, 0.1);">
@@ -75,11 +79,7 @@
           x: {
             ticks: {
               color: "#000",
-              font: { size: 12 },
-              callback: function(value, index, ticks) {
-                // Optional: wrap long labels if needed
-                return this.getLabelForValue(value).split(" ").join("\n");
-              }
+              font: { size: 12 }
             }
           }
         }
