@@ -107,3 +107,10 @@ def download_file():
 
 if __name__ == '__main__':
     app.run(debug=True)
+@app.route('/customer')
+def customer_view():
+    if not os.path.exists(output_file_path):
+        return "<p>No processed inventory available yet.</p>"
+
+    df = pd.read_excel(output_file_path)
+    return render_template('customer.html', table=df.to_html(classes='table table-striped', index=False))
