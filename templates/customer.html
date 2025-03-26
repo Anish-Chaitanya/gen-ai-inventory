@@ -18,9 +18,9 @@
     <div class="card p-4 my-4 shadow-lg" style="background: rgba(255, 255, 255, 0.05);">
       <h4 class="text-warning">🧠 About This Dashboard</h4>
       <p>
-        This project is a Gen AI-Based Inventory Management System that analyzes uploaded inventory data using AI logic.
-        It calculates sold percentages, reordering needs, and optimal discount strategies based on expiry dates and stock behavior.
-        Customers can view real-time insights from processed inventory in a clean and visual format.
+        This Gen AI-Based Inventory Management System processes uploaded inventory files to provide intelligent insights
+        on stock movement, sales trends, reordering strategies, and dynamic discount recommendations based on expiry proximity.
+        Customers can view this data in real-time through clean tables and insightful graphs.
       </p>
     </div>
 
@@ -31,7 +31,7 @@
 
     <!-- Chart -->
     <div class="mt-5">
-      <h3 class="mb-4 text-white">📈 Sold Quantity vs Product (₹ Price)</h3>
+      <h3 class="mb-4 text-white">📈 Sold Quantity per Product (Price Included)</h3>
       <canvas id="salesChart" width="600" height="300"></canvas>
     </div>
   </div>
@@ -43,7 +43,7 @@
       data: {
         labels: {{ product_labels | safe }},
         datasets: [{
-          label: 'Sold Quantity',
+          label: 'Sold Quantity (Units)',
           data: {{ sold_quantities | safe }},
           backgroundColor: 'rgba(255, 206, 86, 0.6)',
           borderColor: 'rgba(255, 159, 64, 1)',
@@ -52,18 +52,31 @@
       },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: "#000",
+              font: { size: 14 }
+            }
+          }
+        },
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { color: "#ffffff" }
+            ticks: {
+              color: "#000",
+              font: { size: 12 }
+            }
           },
           x: {
-            ticks: { color: "#ffffff" }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: { color: "#ffffff" }
+            ticks: {
+              color: "#000",
+              font: { size: 12 },
+              callback: function(value, index, ticks) {
+                // Optional: wrap long labels if needed
+                return this.getLabelForValue(value).split(" ").join("\n");
+              }
+            }
           }
         }
       }
