@@ -131,7 +131,7 @@ def customer_view():
         return "<p>No processed inventory available yet.</p>"
 
     df = pd.read_excel(output_file_path)
-    product_labels = (df["Product Name"] + " ₹" + df["Sold Price"].astype(str)).tolist()
+    product_labels = (df["Product Name"] + " ₹" + df["Sold Price"].round(2).astype(str)).tolist()
     sold_quantities = df["Sold Quantity"].tolist()
 
     return render_template(
@@ -140,8 +140,6 @@ def customer_view():
         product_labels=product_labels,
         sold_quantities=sold_quantities
     )
-
-
 # ====================
 # Run
 # ====================
