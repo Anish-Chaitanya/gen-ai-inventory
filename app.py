@@ -1,23 +1,6 @@
 from flask import Flask, request, render_template, send_file, jsonify
 import pandas as pd
 import os
-
-# Auth
-from flask_httpauth import HTTPBasicAuth
-
-app = Flask(__name__)
-auth = HTTPBasicAuth()
-
-# Basic auth credentials
-users = {
-    "admin": "yourpassword"  # 🔐 Change this!
-}
-
-@auth.get_password
-def get_pw(username):
-    if username in users:
-        return users.get(username)
-
 # Folder setup
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
