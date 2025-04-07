@@ -82,7 +82,6 @@ def home():
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
-@auth.login_required
 def upload_file():
     global input_file_path
     if 'file' not in request.files:
