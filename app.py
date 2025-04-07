@@ -1,6 +1,9 @@
 from flask import Flask, request, render_template, send_file, jsonify
 import pandas as pd
 import os
+
+app = Flask(__name__)
+
 # Folder setup
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -14,7 +17,10 @@ output_file_path = os.path.join(UPLOAD_FOLDER, "processed_inventory.xlsx")
 def process_excel(file_path):
     df = pd.read_excel(file_path)
 
-    required_columns = {"Product Name", "Expiry Date", "Bought Date", "Current Date", "Total Quantity", "Sold Quantity", "Product Price"}
+    required_columns = {
+        "Product Name", "Expiry Date", "Bought Date", "Current Date",
+        "Total Quantity", "Sold Quantity", "Product Price"
+    }
     if not required_columns.issubset(df.columns):
         return None, "Missing required columns in Excel file."
 
@@ -58,9 +64,7 @@ def process_excel(file_path):
 # ROUTES
 # ====================
 
-# Admin view (password protected)
 @app.route('/')
-@auth.login_required
 def home():
     return render_template('index.html')
 
@@ -84,7 +88,6 @@ def upload_file():
     return jsonify({"message": "File processed successfully"})
 
 @app.route('/input-data')
-@auth.login_required
 def input_data():
     if input_file_path is None:
         return "<p>No file uploaded yet.</p>"
@@ -92,7 +95,6 @@ def input_data():
     return df.to_html(classes='table table-striped', index=False)
 
 @app.route('/output-data')
-@auth.login_required
 def output_data():
     if not os.path.exists(output_file_path):
         return "<p>No processed data available yet.</p>"
@@ -100,7 +102,6 @@ def output_data():
     return df.to_html(classes='table table-striped', index=False)
 
 @app.route('/download')
-@auth.login_required
 def download_file():
     return send_file(output_file_path, as_attachment=True)
 
@@ -122,6 +123,7 @@ def customer_view():
         product_labels=product_labels,
         sold_quantities=sold_quantities
     )
+
 # ====================
 # Run
 # ====================
