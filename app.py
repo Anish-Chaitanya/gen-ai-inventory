@@ -1,8 +1,9 @@
-from flask import Flask, request, render_template, send_file, jsonify
+from flask import Flask, request, render_template, send_file, jsonify, redirect, url_for
 import pandas as pd
 import os
 
 app = Flask(__name__)
+app.secret_key = "super-secret-key"
 
 # Folder setup
 UPLOAD_FOLDER = "uploads"
@@ -64,10 +65,12 @@ def process_excel(file_path):
 # ROUTES
 # ====================
 
+# Home page (admin dashboard)
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# File upload and processing
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global input_file_path
@@ -87,6 +90,7 @@ def upload_file():
 
     return jsonify({"message": "File processed successfully"})
 
+# View raw uploaded data
 @app.route('/input-data')
 def input_data():
     if input_file_path is None:
@@ -94,6 +98,7 @@ def input_data():
     df = pd.read_excel(input_file_path)
     return df.to_html(classes='table table-striped', index=False)
 
+# View processed output
 @app.route('/output-data')
 def output_data():
     if not os.path.exists(output_file_path):
@@ -101,6 +106,7 @@ def output_data():
     df = pd.read_excel(output_file_path)
     return df.to_html(classes='table table-striped', index=False)
 
+# Download Excel
 @app.route('/download')
 def download_file():
     return send_file(output_file_path, as_attachment=True)
@@ -125,7 +131,20 @@ def customer_view():
     )
 
 # ====================
-# Run
+# Login Page (static style)
+# ====================
+@app.route('/login')
+def login():
+    team_images = [
+        "IMG-20250409-WA0002.jpg", "IMG-20250409-WA0003.jpg", "IMG-20250409-WA0004.jpg",
+        "IMG-20250409-WA0005.jpg", "IMG-20250409-WA0006.jpg", "IMG-20250409-WA0007.jpg",
+        "IMG-20250409-WA0008.jpg", "IMG-20250409-WA0009.jpg", "IMG-20250409-WA0010.jpg",
+        "IMG-20250409-WA0011.jpg"
+    ]
+    return render_template("login.html", team_images=team_images)
+
+# ====================
+# Run Server
 # ====================
 if __name__ == '__main__':
     app.run(debug=True)
