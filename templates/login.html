@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gen AI Inventory Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body class="login-body">
+
+  <div class="login-container">
+    <div class="login-image">
+      <img src="{{ url_for('static', filename='images/IMG-20250409-WA0010.jpg') }}" alt="Inventory AI">
+    </div>
+
+    <div class="login-box">
+      <h1>🔐 Welcome to Gen AI Inventory</h1>
+      <p class="tagline">Smart insights for smarter stock control</p>
+
+      <form action="/" method="get">
+        <input type="text" name="username" placeholder="Enter your name" required>
+        <button type="submit">Enter Dashboard</button>
+      </form>
+    </div>
+
+    <div class="team-section">
+      <h2>👥 Our Team</h2>
+      <div class="team-gallery">
+        {% for img in team_images %}
+          <img src="{{ url_for('static', filename='images/' ~ img) }}" alt="Team Member">
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
