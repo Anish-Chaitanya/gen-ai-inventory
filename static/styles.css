@@ -29,7 +29,6 @@ body {
     background: rgba(255, 204, 0, 0.1);
     transition: all 0.3s ease-in-out;
 }
-
 .dropzone:hover {
     background: rgba(255, 204, 0, 0.3);
     border-color: #ff9900;
@@ -45,14 +44,8 @@ body {
     display: inline-block;
     text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
 }
-
-#inputTitle::before {
-    content: "📂 ";
-}
-
-#outputTitle::before {
-    content: "📊 ";
-}
+#inputTitle::before { content: "📂 "; }
+#outputTitle::before { content: "📊 "; }
 
 /* ===== Tables Styling ===== */
 table {
@@ -64,22 +57,17 @@ table {
     overflow: hidden;
     backdrop-filter: blur(10px);
 }
-
 th, td {
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 12px;
     text-align: left;
     color: #ffffff;
 }
-
-/* Highlight Headers */
 th {
     background: linear-gradient(90deg, #ffcc00, #ff6600);
     color: #0b132b;
     font-weight: bold;
 }
-
-/* Alternate Row Colors */
 tr:nth-child(even) {
     background: rgba(255, 255, 255, 0.1);
 }
@@ -88,15 +76,8 @@ tr:nth-child(odd) {
 }
 
 /* ===== Discount & Reorder Highlights ===== */
-td:nth-child(10) {  /* Reorder Quantity */
-    font-weight: bold;
-    color: #ffcc00;
-}
-
-td:nth-child(11) {  /* Discount */
-    font-weight: bold;
-    color: #ff4444;
-}
+td:nth-child(10) { font-weight: bold; color: #ffcc00; }
+td:nth-child(11) { font-weight: bold; color: #ff4444; }
 
 /* ===== Buttons ===== */
 .btn {
@@ -109,39 +90,30 @@ td:nth-child(11) {  /* Discount */
     border-radius: 8px;
     transition: all 0.3s ease-in-out;
 }
-
-/* Process Button */
 .btn-primary {
     background: #ffcc00;
     color: #0b132b;
     box-shadow: 0 0 10px #ffcc00;
 }
-
 .btn-primary:hover {
     background: #ff9900;
     box-shadow: 0 0 15px #ff9900;
 }
-
-/* Download Button */
 .btn-success {
     background: #22c55e;
     color: #0b132b;
     box-shadow: 0 0 10px #22c55e;
 }
-
 .btn-success:hover {
     background: #16a34a;
     box-shadow: 0 0 15px #16a34a;
 }
-
-/* Customer View Button */
 .btn-outline-light {
     border: 2px solid #fff;
     color: #fff;
     background-color: transparent;
     transition: all 0.3s ease-in-out;
 }
-
 .btn-outline-light:hover {
     background-color: #fff;
     color: #1e3c72;
@@ -155,7 +127,6 @@ td:nth-child(11) {  /* Discount */
     color: #ffcc00;
     font-weight: bold;
 }
-
 .ai-loader {
     width: 60px;
     height: 60px;
@@ -165,7 +136,6 @@ td:nth-child(11) {  /* Discount */
     animation: spin 1s linear infinite;
     margin: auto;
 }
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -179,7 +149,6 @@ td:nth-child(11) {  /* Discount */
     background: rgba(255, 204, 0, 0.2);
     border-radius: 12px;
 }
-
 .progress-bar {
     background: linear-gradient(90deg, #ffcc00, #ff6600);
     height: 100%;
@@ -194,6 +163,7 @@ canvas {
     margin-top: 30px;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
+
 /* ===== Project Description Section ===== */
 .project-description {
     background: rgba(255, 255, 255, 0.1);
@@ -205,21 +175,67 @@ canvas {
     line-height: 1.6;
     text-align: center;
 }
-
 .project-description h4 {
     color: #ffcc00;
     font-weight: bold;
     font-size: 1.6rem;
     text-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
 }
-
 .project-description ul {
     list-style: none;
     padding-left: 0;
 }
-
 .project-description li {
     padding: 5px 0;
     font-size: 1rem;
     color: #fff;
+}
+
+/* ===== Login Page Custom Styling ===== */
+.login-container {
+    max-width: 450px;
+    margin: 60px auto;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+    text-align: left;
+}
+.login-container h2 {
+    text-align: center;
+    color: #ffcc00;
+    margin-bottom: 30px;
+}
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #000;
+}
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #ffcc00;
+}
+.login-container button:hover {
+    background-color: #ff9900;
+}
+
+/* ===== Team or Profile Image Styling ===== */
+.profile-image {
+    width: 100%;
+    border-radius: 12px;
+    margin: 20px auto;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
