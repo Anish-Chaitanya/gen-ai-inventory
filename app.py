@@ -3,14 +3,17 @@ import pandas as pd
 import os
 
 app = Flask(__name__)
-app.secret_key = 'super-secret-key'
+app.secret_key = 'supersecretkey'  # Required for session handling
 
-# Folder setup
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 input_file_path = None
 output_file_path = os.path.join(UPLOAD_FOLDER, "processed_inventory.xlsx")
+
+# Dummy credentials (change if needed)
+USERNAME = "admin"
+PASSWORD = "password"
 
 # ====================
 # Excel Processor
@@ -29,10 +32,8 @@ def process_excel(file_path):
     df["Bought Date"] = pd.to_datetime(df["Bought Date"])
     df["Current Date"] = pd.to_datetime(df["Current Date"])
 
-    # Markup ≤ 20%
     df["Sold Price"] = df["Product Price"] * (1 + df["Product Price"].apply(lambda x: min(0.2, x * 0.01)))
     df["Sold Price"] = df["Sold Price"].round(2)
-
     df["Sold Percentage"] = (df["Sold Quantity"] / df["Total Quantity"]) * 100
 
     def calculate_reorder(row):
@@ -42,8 +43,6 @@ def process_excel(file_path):
             return row["Total Quantity"]
         else:
             return row["Total Quantity"] + (row["Total Quantity"] * 0.3)
-
-    df["Reorder Quantity"] = df.apply(calculate_reorder, axis=1)
 
     def calculate_discount(row):
         days_to_expiry = (row["Expiry Date"] - row["Current Date"]).days
@@ -56,39 +55,40 @@ def process_excel(file_path):
         else:
             return "50% Discount"
 
+    df["Reorder Quantity"] = df.apply(calculate_reorder, axis=1)
     df["Discount"] = df.apply(calculate_discount, axis=1)
 
     df.to_excel(output_file_path, index=False)
     return df, None
 
 # ====================
-# ROUTES
+# Routes
 # ====================
 
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get("username")
-        password = request.form.get("password")
+@app.route('/')
+def login_page():
+    return render_template('login.html')
 
-        if username == "admin" and password == "1234":
-            session['logged_in'] = True
-            return redirect(url_for('dashboard'))
-        else:
-            return render_template("login.html", error="Invalid username or password")
-    return render_template("login.html")
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    if username == USERNAME and password == PASSWORD:
+        session['user'] = username
+        return redirect(url_for('dashboard'))
+    return render_template('login.html', error="Invalid credentials")
 
 @app.route('/dashboard')
 def dashboard():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global input_file_path
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
 
     file = request.files['file']
     if file.filename == '':
@@ -96,7 +96,6 @@ def upload_file():
 
     input_file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(input_file_path)
-
     processed_df, error = process_excel(input_file_path)
     if error:
         return jsonify({"error": error}), 400
@@ -105,6 +104,8 @@ def upload_file():
 
 @app.route('/input-data')
 def input_data():
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
     if input_file_path is None:
         return "<p>No file uploaded yet.</p>"
     df = pd.read_excel(input_file_path)
@@ -112,6 +113,8 @@ def input_data():
 
 @app.route('/output-data')
 def output_data():
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
     if not os.path.exists(output_file_path):
         return "<p>No processed data available yet.</p>"
     df = pd.read_excel(output_file_path)
@@ -119,13 +122,14 @@ def output_data():
 
 @app.route('/download')
 def download_file():
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
     return send_file(output_file_path, as_attachment=True)
 
 @app.route('/customer')
 def customer_view():
     if not os.path.exists(output_file_path):
         return "<p>No processed inventory available yet.</p>"
-
     df = pd.read_excel(output_file_path)
     product_labels = (df["Product Name"] + " ₹" + df["Sold Price"].round(2).astype(str)).tolist()
     sold_quantities = df["Sold Quantity"].tolist()
@@ -139,8 +143,8 @@ def customer_view():
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
-    return redirect(url_for('login'))
+    session.clear()
+    return redirect(url_for('login_page'))
 
 # ====================
 # Run
