@@ -1,9 +1,9 @@
-from flask import Flask, request, render_template, send_file, jsonify, redirect, url_for
+from flask import Flask, request, render_template, send_file, jsonify, redirect, url_for, session
 import pandas as pd
 import os
 
 app = Flask(__name__)
-app.secret_key = "super-secret-key"
+app.secret_key = 'super-secret-key'
 
 # Folder setup
 UPLOAD_FOLDER = "uploads"
@@ -65,12 +65,25 @@ def process_excel(file_path):
 # ROUTES
 # ====================
 
-# Home page (admin dashboard)
-@app.route('/')
-def home():
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username == "admin" and password == "1234":
+            session['logged_in'] = True
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template("login.html", error="Invalid username or password")
+    return render_template("login.html")
+
+@app.route('/dashboard')
+def dashboard():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     return render_template('index.html')
 
-# File upload and processing
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global input_file_path
@@ -90,7 +103,6 @@ def upload_file():
 
     return jsonify({"message": "File processed successfully"})
 
-# View raw uploaded data
 @app.route('/input-data')
 def input_data():
     if input_file_path is None:
@@ -98,7 +110,6 @@ def input_data():
     df = pd.read_excel(input_file_path)
     return df.to_html(classes='table table-striped', index=False)
 
-# View processed output
 @app.route('/output-data')
 def output_data():
     if not os.path.exists(output_file_path):
@@ -106,14 +117,10 @@ def output_data():
     df = pd.read_excel(output_file_path)
     return df.to_html(classes='table table-striped', index=False)
 
-# Download Excel
 @app.route('/download')
 def download_file():
     return send_file(output_file_path, as_attachment=True)
 
-# ====================
-# Customer View
-# ====================
 @app.route('/customer')
 def customer_view():
     if not os.path.exists(output_file_path):
@@ -130,21 +137,13 @@ def customer_view():
         sold_quantities=sold_quantities
     )
 
-# ====================
-# Login Page (static style)
-# ====================
-@app.route('/login')
-def login():
-    team_images = [
-        "IMG-20250409-WA0002.jpg", "IMG-20250409-WA0003.jpg", "IMG-20250409-WA0004.jpg",
-        "IMG-20250409-WA0005.jpg", "IMG-20250409-WA0006.jpg", "IMG-20250409-WA0007.jpg",
-        "IMG-20250409-WA0008.jpg", "IMG-20250409-WA0009.jpg", "IMG-20250409-WA0010.jpg",
-        "IMG-20250409-WA0011.jpg"
-    ]
-    return render_template("login.html", team_images=team_images)
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
 
 # ====================
-# Run Server
+# Run
 # ====================
 if __name__ == '__main__':
     app.run(debug=True)
